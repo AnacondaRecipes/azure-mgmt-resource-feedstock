@@ -1,46 +1,49 @@
-{% set version = "18.0.0" %}
 {% set name = "azure-mgmt-resource" %}
-{% set sha256 = "551036e592f409ef477d30937ea7cc4dda5126576965d9c816fdb8401bbd774c" %}
+{% set version = "24.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.zip
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: {{ sha256 }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: cf6b8995fcdd407ac9ff1dd474087129429a1d90dbb1ac77f97c19b96237b265
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python >=3.6
+    - python
     - setuptools
+    - wheel
     - pip
   run:
-    - python >=3.6
-    - azure-common >=1.1,<2.0.0
-    - azure-mgmt-core >=1.2.0,<2.0.0
-    - msrest >=0.6.21
+    - python
+    - isodate>=0.6.1
+    - typing-extensions >=4.6.0
+    - azure-common >=1.1
+    - azure-mgmt-core >=1.5.0
 
 test:
   imports:
-    - azure
-    - azure.mgmt
     - azure.mgmt.resource
   commands:
-    - python -m unittest discover -p "test_*.py"
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/resources/azure-mgmt-resource
+  summary: Microsoft Azure Resource Management Client Library for Python
   license: MIT
   license_family: MIT
-  license_file: LICENSE.txt
-  summary: Microsoft Azure Resource Management Client Library for Python
+  license_file: LICENSE
+  description: Microsoft Azure Resource Management Client Library for Python
+  dev_url: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/resources/azure-mgmt-resource
+  doc_url: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/resources/azure-mgmt-resource
 
 extra:
   recipe-maintainers:
